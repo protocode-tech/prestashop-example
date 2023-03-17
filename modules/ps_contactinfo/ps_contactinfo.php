@@ -41,7 +41,7 @@ class Ps_Contactinfo extends Module implements WidgetInterface
     {
         $this->name = 'ps_contactinfo';
         $this->author = 'PrestaShop';
-        $this->version = '3.3.1';
+        $this->version = '3.3.2';
 
         $this->bootstrap = true;
         parent::__construct();
@@ -88,6 +88,9 @@ class Ps_Contactinfo extends Module implements WidgetInterface
     public function getWidgetVariables($hookName = null, array $configuration = [])
     {
         $address = $this->context->shop->getAddress();
+
+        $is_state_multilang = !empty(State::$definition['multilang']);
+        $state_name = (new State($address->id_state))->name;
 
         $contact_infos = [
             'company' => Configuration::get('PS_SHOP_NAME'),
