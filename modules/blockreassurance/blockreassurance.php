@@ -1,21 +1,27 @@
 <?php
 /**
- * Copyright since 2007 PrestaShop SA and Contributors
- * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
+ * 2007-2019 PrestaShop
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Academic Free License version 3.0
- * that is bundled with this package in the file LICENSE.md.
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
  * It is also available through the world-wide-web at this URL:
- * https://opensource.org/licenses/AFL-3.0
+ * http://opensource.org/licenses/afl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
  * to license@prestashop.com so we can send you a copy immediately.
  *
- * @author    PrestaShop SA and Contributors <contact@prestashop.com>
- * @copyright Since 2007 PrestaShop SA and Contributors
- * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+ * versions in the future. If you wish to customize PrestaShop for your
+ * needs please refer to http://www.prestashop.com for more information.
+ *
+ * @author PrestaShop SA <contact@prestashop.com>
+ * @copyright  2007-2019 PrestaShop SA
+ * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ *  International Registered Trademark & Property of PrestaShop SA
  */
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -88,8 +94,8 @@ class blockreassurance extends Module implements WidgetInterface
     {
         // Settings
         $this->name = 'blockreassurance';
-        $this->tab = 'front_office_features';
-        $this->version = '5.1.2';
+        $this->tab = 'seo';
+        $this->version = '5.1.1';
         $this->author = 'PrestaShop';
         $this->need_instance = false;
 
@@ -236,6 +242,8 @@ class blockreassurance extends Module implements WidgetInterface
 
         $this->context->controller->addCSS($this->_path . 'views/dist/back.css', 'all');
         $this->context->controller->addJS($this->_path . 'views/dist/back.js');
+        $this->context->controller->addJqueryPlugin('colorpicker');
+        $this->context->controller->addJqueryUI('ui.sortable');
     }
 
     /**
@@ -269,14 +277,6 @@ class blockreassurance extends Module implements WidgetInterface
         $moduleAdminLink = Context::getContext()->link->getAdminLink('AdminModules', true) . '&configure=' . $this->name . '&module_name=' . $this->name;
 
         $allCms = CMS::listCms($id_lang);
-        $fields_captions = [
-            'position' => $this->trans('Position', [], 'Modules.Blockreassurance.Admin'),
-            'image' => $this->trans('Image', [], 'Modules.Blockreassurance.Admin'),
-            'title' => $this->trans('Title', [], 'Modules.Blockreassurance.Admin'),
-            'description' => $this->trans('Description', [], 'Modules.Blockreassurance.Admin'),
-            'redirection' => $this->trans('Redirection', [], 'Modules.Blockreassurance.Admin'),
-            'actions' => $this->trans('Actions', [], 'Modules.Blockreassurance.Admin'),
-        ];
 
         $this->context->smarty->assign([
             'psr_hook_header' => (int) Configuration::get('PSR_HOOK_HEADER'),
@@ -301,7 +301,6 @@ class blockreassurance extends Module implements WidgetInterface
             'LINK_TYPE_NONE' => ReassuranceActivity::TYPE_LINK_NONE,
             'LINK_TYPE_CMS' => ReassuranceActivity::TYPE_LINK_CMS_PAGE,
             'LINK_TYPE_URL' => ReassuranceActivity::TYPE_LINK_URL,
-            'fields_captions' => $fields_captions,
         ]);
 
         return $this->display(__FILE__, 'views/templates/admin/configure.tpl');
@@ -444,13 +443,10 @@ class blockreassurance extends Module implements WidgetInterface
             $elements[$key]['text'] = $value['title'] . ' ' . $value['description'];
             $elements[$key]['title'] = $value['title'];
             $elements[$key]['description'] = $value['description'];
-            $elements[$key]['type_link'] = $value['type_link'];
-            $elements[$key]['link'] = $value['link'];
         }
 
         return [
             'elements' => $elements,
-            'LINK_TYPE_NONE' => ReassuranceActivity::TYPE_LINK_NONE,
         ];
     }
 

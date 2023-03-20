@@ -1,11 +1,11 @@
 <?php
 /**
- * Copyright since 2007 PrestaShop SA and Contributors
+ * 2007-2020 PrestaShop and Contributors
  *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Academic Free License 3.0 (AFL-3.0)
- * that is bundled with this package in the file LICENSE.md.
+ * that is bundled with this package in the file LICENSE.txt.
  * It is also available through the world-wide-web at this URL:
  * https://opensource.org/licenses/AFL-3.0
  * If you did not receive a copy of the license and are unable to
@@ -13,7 +13,7 @@
  * to license@prestashop.com so we can send you a copy immediately.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright Since 2007 PrestaShop SA and Contributors
+ * @copyright 2007-2020 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
@@ -74,12 +74,7 @@ class HookActionOrderStatusPostUpdate implements HookInterface
         // If it was not already refunded
         if ($gaRefundSent === false) {
             // We refund it and set the "sent" flag to true
-            if ((bool) Configuration::get('GA_V4_ENABLED')) {
-                $js = $this->getGoogleAnalytics4($this->params['id_order']);
-            } else {
-                $js = $this->getUniversalAnalytics($this->params['id_order']);
-            }
-            $this->context->cookie->__set('ga_admin_refund', $js);
+            $this->context->cookie->__set('ga_admin_refund', 'MBG.refundByOrderId(' . json_encode(['id' => $this->params['id_order']]) . ');');
             $this->context->cookie->write();
 
             // We save this information to database
@@ -97,28 +92,5 @@ class HookActionOrderStatusPostUpdate implements HookInterface
     public function setParams($params)
     {
         $this->params = $params;
-    }
-
-    /**
-     * @param int $idOrder
-     */
-    protected function getUniversalAnalytics($idOrder)
-    {
-        return 'MBG.refundByOrderId(' . json_encode(['id' => $idOrder]) . ');';
-    }
-
-    /**
-     * @param int $idOrder
-     */
-    protected function getGoogleAnalytics4($idOrder)
-    {
-        $eventData = [
-            'transaction_id' => (int) $idOrder,
-        ];
-
-        return $this->module->getTools()->renderEvent(
-            'refund',
-            $eventData
-        );
     }
 }

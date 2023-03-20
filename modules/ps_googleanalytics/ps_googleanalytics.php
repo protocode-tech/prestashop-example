@@ -1,11 +1,11 @@
 <?php
 /**
- * Copyright since 2007 PrestaShop SA and Contributors
+ * 2007-2020 PrestaShop and Contributors
  *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Academic Free License 3.0 (AFL-3.0)
- * that is bundled with this package in the file LICENSE.md.
+ * that is bundled with this package in the file LICENSE.txt.
  * It is also available through the world-wide-web at this URL:
  * https://opensource.org/licenses/AFL-3.0
  * If you did not receive a copy of the license and are unable to
@@ -13,7 +13,7 @@
  * to license@prestashop.com so we can send you a copy immediately.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright Since 2007 PrestaShop SA and Contributors
+ * @copyright 2007-2020 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
@@ -43,18 +43,18 @@ class Ps_Googleanalytics extends Module
     public $displayName;
     public $description;
     public $confirmUninstall;
+    public $js_state = 0;
     public $eligible = 0;
     public $filterable = 1;
     public $products = [];
     public $_debug = 0;
     public $psVersionIs17;
-    private $tools = null;
 
     public function __construct()
     {
         $this->name = 'ps_googleanalytics';
         $this->tab = 'analytics_stats';
-        $this->version = '4.2.1';
+        $this->version = '4.1.2';
         $this->ps_versions_compliancy = ['min' => '1.6', 'max' => _PS_VERSION_];
         $this->author = 'PrestaShop';
         $this->module_key = 'fd2aaefea84ac1bb512e6f1878d990b8';
@@ -62,9 +62,9 @@ class Ps_Googleanalytics extends Module
 
         parent::__construct();
 
-        $this->displayName = $this->trans('Google Analytics', [], 'Modules.GAnalytics.Admin');
-        $this->description = $this->trans('Gain clear insights into important metrics about your customers, using Google Analytics', [], 'Modules.GAnalytics.Admin');
-        $this->confirmUninstall = $this->trans('Are you sure you want to uninstall Google Analytics? You will lose all the data related to this module.', [], 'Modules.GAnalytics.Admin');
+        $this->displayName = $this->l('Google Analytics');
+        $this->description = $this->l('Gain clear insights into important metrics about your customers, using Google Analytics');
+        $this->confirmUninstall = $this->l('Are you sure you want to uninstall Google Analytics? You will lose all the data related to this module.');
         $this->psVersionIs17 = (bool) version_compare(_PS_VERSION_, '1.7', '>=');
     }
 
@@ -74,16 +74,15 @@ class Ps_Googleanalytics extends Module
     public function getContent()
     {
         $configurationForm = new PrestaShop\Module\Ps_Googleanalytics\Form\ConfigurationForm($this);
-        $output = '';
+        $formOutput = '';
 
         if (Tools::isSubmit('submit' . $this->name)) {
-            $output .= $configurationForm->treat();
+            $formOutput = $configurationForm->treat();
         }
 
-        $output .= $this->display(__FILE__, './views/templates/admin/configuration.tpl');
-        $output .= $configurationForm->generate();
+        $formOutput .= $configurationForm->generate();
 
-        return $output;
+        return $this->display(__FILE__, './views/templates/admin/configuration.tpl') . $formOutput;
     }
 
     public function hookDisplayHeader($params, $back_office = false)
@@ -107,29 +106,23 @@ class Ps_Googleanalytics extends Module
     }
 
     /**
-     * Footer hook for 1.6
+     * Footer hook.
      * This function is run to load JS script for standards actions such as product clicks
      */
     public function hookDisplayFooter()
     {
-        if ($this->psVersionIs17) {
-            return;
-        }
         $hook = new PrestaShop\Module\Ps_Googleanalytics\Hooks\HookDisplayFooter($this, $this->context);
 
         return $hook->run();
     }
 
     /**
-     * Footer hook for 1.7
-     * This function is run to load JS script for standards actions such as product clicks
+     * Homepage hook.
+     * This function is run to manage analytics for product list associated to home featured, news products and best sellers Modules
      */
-    public function hookDisplayBeforeBodyClosingTag()
+    public function hookDisplayHome()
     {
-        if (!$this->psVersionIs17) {
-            return;
-        }
-        $hook = new PrestaShop\Module\Ps_Googleanalytics\Hooks\HookDisplayFooter($this, $this->context);
+        $hook = new PrestaShop\Module\Ps_Googleanalytics\Hooks\HookDisplayHome($this, $this->context);
 
         return $hook->run();
     }
@@ -154,7 +147,10 @@ class Ps_Googleanalytics extends Module
     {
         $gaTagHandler = new PrestaShop\Module\Ps_Googleanalytics\Handler\GanalyticsJsHandler($this, $this->context);
 
-        $output = $gaTagHandler->generate($this->context->cookie->__get('ga_admin_refund'));
+        $output = $gaTagHandler->generate(
+            $this->context->cookie->__get('ga_admin_refund'),
+            true
+        );
         $this->context->cookie->__unset('ga_admin_refund');
         $this->context->cookie->write();
 
@@ -255,36 +251,5 @@ class Ps_Googleanalytics extends Module
 
         return parent::uninstall() &&
             $database->uninstallTables();
-    }
-
-    /**
-     * Intermediate method added only to keep backward compatibility with PrestaShop 1.6
-     *
-     * @param string $id
-     * @param array $parameters
-     * @param string|null $domain
-     * @param string|null $locale
-     */
-    public function trans($id, array $parameters = [], $domain = null, $locale = null)
-    {
-        if (method_exists('Module', 'trans')) {
-            return parent::trans($id, $parameters, $domain, $locale);
-        } else {
-            return $this->l($id);
-        }
-    }
-
-    /**
-     * Returns instance of GoogleAnalyticsTools
-     */
-    public function getTools()
-    {
-        if ($this->tools === null) {
-            $this->tools = new PrestaShop\Module\Ps_Googleanalytics\GoogleAnalyticsTools(
-                (bool) Configuration::get('GA_V4_ENABLED')
-            );
-        }
-
-        return $this->tools;
     }
 }

@@ -59,7 +59,7 @@ class AdminPsThemeCustoConfigurationController extends ModuleAdminController
             'home_products' => $this->l('Home Products'),
             'block_text' => $this->l('Text block'),
             'banner' => $this->l('Banner'),
-            'social_newsletter' => $this->l('Social & Newsletter'),
+            'social_newsletter' => $this->l('Social &  Newsletter'),
             'footer' => $this->l('Footer'),
             'content' => $this->l('content'),
             'categories' => $this->l('Categories'),
@@ -110,7 +110,7 @@ class AdminPsThemeCustoConfigurationController extends ModuleAdminController
             ],
             'slider' => [
                 'modules' => [
-                    'ps_imageslider' => 22320,
+                    $this->getModule()->ready ? 'pshomeslider' : 'ps_imageslider' => $this->getModule()->ready ? 27562 : 22320,
                 ],
             ],
             'home_products' => [
@@ -398,9 +398,10 @@ class AdminPsThemeCustoConfigurationController extends ModuleAdminController
             'themeConfiguratorUrl' => $this->context->link->getAdminLink(
                 'AdminModules',
                 true,
-                [],
+                false,
                 ['configure' => 'ps_themeconfigurator']
             ),
+            'isPsReady' => $this->getModule()->ready,
             'ps_uri' => $this->getModule()->ps_uri,
         ]);
 
@@ -435,10 +436,16 @@ class AdminPsThemeCustoConfigurationController extends ModuleAdminController
 
         switch ($sModuleAction) {
             case 'uninstall':
+                if ($this->getModule()->ready === true) {
+                    break;
+                }
                 $oModule->uninstall();
                 $sUrlActive = 'install';
             break;
             case 'install':
+                if ($this->getModule()->ready === true) {
+                    break;
+                }
                 $oModule->install();
                 $sUrlActive = method_exists($oModule, 'getContent') ? 'configure' : 'disable';
             break;
@@ -472,7 +479,7 @@ class AdminPsThemeCustoConfigurationController extends ModuleAdminController
         $aModule['displayName'] = $oModule->displayName;
         $aModule['url_active'] = $sUrlActive;
         $aModule['active'] = ThemeCustoRequests::getModuleDeviceStatus($oModule->id);
-        $aModule['actions_url']['configure'] = $this->context->link->getAdminLink('AdminModules', true, [], ['configure' => $oModule->name]);
+        $aModule['actions_url']['configure'] = $this->context->link->getAdminLink('AdminModules', true, false, ['configure' => $oModule->name]);
         $aModule['can_configure'] = method_exists($oModule, 'getContent') ? true : false;
         $aModule['enable_mobile'] = (int) Db::getInstance()->getValue('SELECT enable_device FROM ' . _DB_PREFIX_ . 'module_shop WHERE id_module = ' . (int) $oModule->id);
 
@@ -480,6 +487,7 @@ class AdminPsThemeCustoConfigurationController extends ModuleAdminController
             'module' => $aModule,
             'moduleActions' => $this->aModuleActions,
             'moduleActionsNames' => $this->moduleActionsNames,
+            'isPsReady' => $this->getModule()->ready,
         ]);
 
         $this->ajaxDie($this->context->smarty->fetch(__DIR__ . '/../../views/templates/admin/controllers/' . $this->controller_quick_name . '/elem/module_actions.tpl'));
@@ -519,14 +527,19 @@ class AdminPsThemeCustoConfigurationController extends ModuleAdminController
                 } else {
                     foreach ($aElementsList as $sModuleName => $iModuleId) {
                         if (!in_array($sModuleName, $modulesOnDisk)) {
-                            continue;
-                        }
-                        $module = Module::getInstanceByName($sModuleName);
-                        if (!($module instanceof Module)) {
-                            continue;
+                            if ($this->getModule()->ready !== false) {
+                                continue;
+                            }
+                            /* For a module coming from outside. It will be downloaded and installed */
+                            $length = file_put_contents(_PS_MODULE_DIR_ . basename($sModuleName) . '.zip', Tools::addonsRequest('module', ['id_module' => $iModuleId]));
+                            if (!empty($length) && Tools::ZipExtract(_PS_MODULE_DIR_ . basename($sModuleName) . '.zip', _PS_MODULE_DIR_)) {
+                                unlink(_PS_MODULE_DIR_ . basename($sModuleName) . '.zip');
+                            } else {
+                                continue;
+                            }
                         }
 
-                        $aModuleFinalList[$sSegmentName][$sType][$sModuleName] = $this->setModuleFinalList($module, Module::isInstalled($sModuleName));
+                        $aModuleFinalList[$sSegmentName][$sType][$sModuleName] = $this->setModuleFinalList(Module::getInstanceByName($sModuleName), Module::isInstalled($sModuleName));
                     }
                 }
             }
@@ -578,7 +591,7 @@ class AdminPsThemeCustoConfigurationController extends ModuleAdminController
         $aModule['description'] = $oModuleInstance->description;
         $aModule['controller_name'] = (isset($oModuleInstance->controller_name) ? $oModuleInstance->controller_name : '');
         $aModule['logo'] = '/modules/' . $oModuleInstance->name . '/logo.png';
-        $aModule['actions_url']['configure'] = $this->context->link->getAdminLink('AdminModules', true, [], ['configure' => $oModuleInstance->name]);
+        $aModule['actions_url']['configure'] = $this->context->link->getAdminLink('AdminModules', true, false, ['configure' => $oModuleInstance->name]);
 
         return $aModule;
     }
