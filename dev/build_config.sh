@@ -3,7 +3,7 @@
 cat <<EOF > ./app/config/parameters.php
 <?php return [
     'parameters' => [
-        'database_host' => getenv('DB_HOST'),
+        'database_host' => getenv('DB_SERVER'),
         'database_port' => getenv('DB_PORT'),
         'database_name' => getenv('DB_NAME'),
         'database_user' => getenv('DB_USER'),
