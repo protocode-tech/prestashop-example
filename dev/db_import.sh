@@ -1,24 +1,29 @@
-#!/bin/sh
+#!/bin/sh 
 
 # Wait for mysql to be up
-if ! docker-compose exec database bash -c "mysqladmin ping --silent -h localhost -u\$MYSQL_USER -p\$MYSQL_PASSWORD 2>/dev/null"; then
+if ! dev/bin/mysqladmin 'ping 2>/dev/null'; then
     echo "Waiting for mysql to be up..."
     sleep 1
-    while ! docker-compose exec database bash -c "mysqladmin ping --silent -h localhost -u\$MYSQL_USER -p\$MYSQL_PASSWORD 2>/dev/null"; do 
+    while ! dev/bin/mysqladmin 'ping 2>/dev/null'; do 
         sleep 1
     done
 fi
 echo "Mysql is up!"
 
-# Copy dump from host to database container
-docker-compose cp ./dev/dump.sql database:/tmp/dump.sql
-# Wait for mysql to be fully ready to handle import command, then import dump copied
-echo "Importing dump"
-if ! docker-compose exec database bash -c "mysql -u\$MYSQL_USER -p\$MYSQL_PASSWORD \$MYSQL_DATABASE < /tmp/dump.sql 2>/dev/null"; then
-    echo "Waiting for mysql to be ready..."
+# Wait for mysql to handle connection
+if ! dev/bin/mysql '-e "" 2>/dev/null'; then
+    echo "Waiting for mysql to handle connection..."
     sleep 1
-    while ! docker-compose exec database bash -c "mysql -u\$MYSQL_USER -p\$MYSQL_PASSWORD \$MYSQL_DATABASE < /tmp/dump.sql 2>/dev/null"; do 
+    while ! dev/bin/mysql '-e "" 2>/dev/null'; do 
         sleep 1
     done
-    echo "Dump imported!"
 fi
+echo "Mysql is ready to handle connections!"
+
+# Copy dump from host to app container
+docker-compose cp ./dev/dump.sql app:/tmp/dump.sql
+
+# Import dump in database
+echo "Importing dump..."
+dev/bin/mysql "< /tmp/dump.sql 2>/dev/null"
+echo "Dump imported!"
