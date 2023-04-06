@@ -1,6 +1,6 @@
 #!/bin/sh
 
-THEME=$(dev/db_exec.sh "SELECT theme_name FROM \${DB_PREFIX}shop LIMIT 1")
+THEME=$(dev/script/db_exec.sh "SELECT theme_name FROM \${DB_PREFIX}shop LIMIT 1")
 THEME=$(echo $THEME | sed 's/theme_name //')
 
 NODE_VERSION="14.17.4"

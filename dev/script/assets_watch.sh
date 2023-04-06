@@ -6,11 +6,11 @@ signal_handler()
 { 
     echo
     echo "Building final assets..."
-    dev/assets_build.sh
+    dev/script/assets_build.sh
 } 
 
 # Install dependencies if necessary
-dev/assets_install.sh
+dev/script/assets_install.sh
 
 # Run webpack compilation in watch mode
 dev/bin/npm run watch

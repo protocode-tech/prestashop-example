@@ -19,6 +19,7 @@ services:
             - mailhog
         networks:
             - protocode_default
+        restart: unless-stopped
     database:
         image: 'mysql:5.7'
         environment:
@@ -30,6 +31,7 @@ services:
             - db-data:/var/lib/mysql
         networks:
             - protocode_default
+        restart: unless-stopped
     phpmyadmin:
         image: 'phpmyadmin:5.0'
         environment:
@@ -43,6 +45,7 @@ services:
             - database
         networks:
             - protocode_default
+        restart: unless-stopped
     mailhog:
         image: mailhog/mailhog
         environment:
@@ -50,6 +53,7 @@ services:
             VIRTUAL_PORT: '8025'
         networks:
             - protocode_default
+        restart: unless-stopped
 volumes:
     db-data:
 networks:

@@ -1,7 +1,11 @@
 #!/bin/sh
 
+##
+## Pre pause scripts
+##
+
 # Export db dump
-dev/db_dump.sh
+dev/script/db_dump.sh
 
 # Stop containers
 docker-compose down
