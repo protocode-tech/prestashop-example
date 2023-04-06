@@ -2,6 +2,11 @@
 ### === Project files === ###
 ### ===================== ###
 
+## --- Virtualization --- ##
+
+/.env
+/docker-compose.yml
+
 ## --- Cache --- ##
 
 # Prestashop
@@ -107,7 +112,6 @@ robots.txt
 
 bower_components/
 node_modules/
-vendor/
 composer.phar
 php-cs-fixer
 .grunt/*

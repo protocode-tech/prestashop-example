@@ -3,7 +3,7 @@ services:
     app:
         image: 'prestashop/prestashop:8.0.1'
         environment:
-            VIRTUAL_HOST: app.local
+            VIRTUAL_HOST: app-${COMPOSE_PROJECT_NAME}.local
             PS_DEV_MODE: '1'
             PS_INSTALL_AUTO: '0'
             PS_ENABLE_SSL: '1'
@@ -18,7 +18,7 @@ services:
             - database
             - mailhog
         networks:
-            - prestashop_network
+            - protocode_default
     database:
         image: 'mysql:5.7'
         environment:
@@ -29,11 +29,11 @@ services:
         volumes:
             - db-data:/var/lib/mysql
         networks:
-            - prestashop_network
+            - protocode_default
     phpmyadmin:
         image: 'phpmyadmin:5.0'
         environment:
-            VIRTUAL_HOST: phpmyadmin.local
+            VIRTUAL_HOST: phpmyadmin-${COMPOSE_PROJECT_NAME}.local
             MYSQL_USERNAME: $DB_USER
             MYSQL_PASSWORD: $DB_PASSWORD
             PMA_USERNAME: $DB_USER
@@ -42,16 +42,16 @@ services:
         links:
             - database
         networks:
-            - prestashop_network
+            - protocode_default
     mailhog:
         image: mailhog/mailhog
         environment:
-            VIRTUAL_HOST: mailhog.local
+            VIRTUAL_HOST: mailhog-${COMPOSE_PROJECT_NAME}.local
             VIRTUAL_PORT: '8025'
         networks:
-            - prestashop_network
+            - protocode_default
 volumes:
     db-data:
 networks:
-    prestashop_network:
-        driver: bridge
+    protocode_default:
+        external: true

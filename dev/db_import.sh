@@ -21,7 +21,7 @@ fi
 echo "Mysql is ready to handle connections!"
 
 # Copy dump from host to app container
-docker-compose cp ./dev/dump.sql app:/tmp/dump.sql
+docker-compose cp ./dev/backup/dump.sql app:/tmp/dump.sql
 
 # Replace url stored in database by current url
 echo "Updating url in dump..."

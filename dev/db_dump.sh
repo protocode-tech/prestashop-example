@@ -12,4 +12,4 @@ docker-compose exec app bash -c "sed -i s/$APP_URL/__VIRTUAL_HOST__/g /tmp/dump.
 echo "Url updated!"
 
 # Copy dump from database to the host
-docker-compose cp app:/tmp/dump.sql ./dev/dump.sql
+docker-compose cp app:/tmp/dump.sql ./dev/backup/dump.sql
