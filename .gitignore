@@ -107,6 +107,7 @@ robots.txt
 
 bower_components/
 node_modules/
+vendor/
 composer.phar
 php-cs-fixer
 .grunt/*

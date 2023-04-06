@@ -1,3 +1,6 @@
 #!/bin/sh
 
-dev/db_exec.sh "UPDATE ps_configuration SET value = 0 WHERE ps_configuration.name = 'PS_SMARTY_CACHE'"
+dev/db_exec.sh "UPDATE \${DB_PREFIX}configuration SET value = 0 WHERE \${DB_PREFIX}configuration.name = 'PS_SMARTY_CACHE'"
+
+# Clear cache
+rm -rf var/cache/*

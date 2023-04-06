@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# This is node container callable as a binary (ex: dev/bin/npm --version)
+dev/bin/npm $@
