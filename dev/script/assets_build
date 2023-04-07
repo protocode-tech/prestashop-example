@@ -4,4 +4,5 @@
 dev/script/assets_install
 
 # Generate assets
+echo "Building final assets..."
 dev/bin/npm run build

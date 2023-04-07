@@ -5,5 +5,6 @@ THEME=$(echo $THEME | sed 's/theme_name //')
 
 # Install dependencies if not done yet
 if ! test -d themes/$THEME/_dev/node_modules; then
+    echo "Installing dependencies..."
     dev/bin/npm install
 fi

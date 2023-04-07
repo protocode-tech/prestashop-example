@@ -1,3 +1,10 @@
-#!/bin/sh
+#!/bin/bash
+
+# Check if configuration table exists
+RESULT=$(dev/bin/mysql "-e \"SELECT 1 FROM \${DB_PREFIX}configuration;\"" /dev/null 2>&1)
+if [[ "$RESULT" == *"doesn't exist"* ]]; then
+    echo "Database not initialized. Skipping."
+    exit 0;
+fi
 
 dev/bin/mysql "-e \"$@\""

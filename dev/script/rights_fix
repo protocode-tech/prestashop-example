@@ -1,5 +1,7 @@
 #!/bin/sh
 
+echo "Fixing rights on files..."
+
 USER_NAME=$(id -u -n)
 
 # If current user is not root

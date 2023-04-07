@@ -4,8 +4,6 @@
 trap signal_handler INT 
 signal_handler() 
 { 
-    echo
-    echo "Building final assets..."
     dev/script/assets_build
 } 
 
@@ -13,4 +11,5 @@ signal_handler()
 dev/script/assets_install
 
 # Run webpack compilation in watch mode
+echo "Launching assets building in watch mode..."
 dev/bin/npm run watch

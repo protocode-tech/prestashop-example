@@ -35,11 +35,9 @@ FOLDER=${FOLDER:-"dev/dist"}
 # Generating a dump inside database container
 echo "Generating dump..."
 dev/bin/tar --zstd -cf /tmp/img.tar.zst img
-echo "Dump generated!"
 
 # Copy dump from database to the host
 echo "Copying dump from container to host..."
 mkdir -p ./$FOLDER
 docker-compose cp app:/tmp/img.tar.zst ./$FOLDER/img.tar.zst 
 docker-compose exec app rm /tmp/img.tar.zst
-echo "Dump copied!"
