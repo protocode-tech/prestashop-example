@@ -1,0 +1,42 @@
+PRINT_HELP() {
+    echo "Usage: $0 [options]"
+    echo ""
+    echo "Options :"
+    echo "  -h, --help      Display this help"
+    echo "  -f, --folder    Destination folder in dev folder"
+}
+
+while [[ $# -gt 0 ]] 
+do
+    key="$1"
+    value="$2"
+    case $key in
+        -h|--help)
+            PRINT_HELP
+            exit 0
+        ;;
+        -f|--folder)
+            FOLDER=${value:-"dist"}
+            shift # past argument
+            shift # past value
+        ;;
+        ?)
+        echo "Unknown option : $1"
+            PRINT_HELP
+            exit 1
+        ;;
+    esac
+done
+
+FOLDER=${FOLDER:-"dist"}
+
+# Copy dump from host to app container
+echo "Copying dump from host to container..."
+docker-compose cp ./dev/$FOLDER/img.tar.zst app:/tmp/img.tar.zst
+echo "Dump copied!"
+
+# Uncompressing dump
+echo "Uncompressing dump..."
+dev/bin/tar --use-compress-program=unzstd -xf /tmp/img.tar.zst
+docker-compose exec app rm /tmp/img.tar.zst
+echo "Dump uncompressed!"

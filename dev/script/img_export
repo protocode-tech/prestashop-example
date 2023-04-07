@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+PRINT_HELP() {
+    echo "Usage: $0 [options]"
+    echo ""
+    echo "Options :"
+    echo "  -h, --help      Display this help"
+    echo "  -f, --folder    Destination folder in dev folder"
+}
+
+while [[ $# -gt 0 ]] 
+do
+    key="$1"
+    value="$2"
+    case $key in
+        -h|--help)
+            PRINT_HELP
+            exit 0
+        ;;
+        -f|--folder)
+            FOLDER=${value:-"dist"}
+            shift # past argument
+            shift # past value
+        ;;
+        ?)
+        echo "Unknown option : $1"
+            PRINT_HELP
+            exit 1
+        ;;
+    esac
+done
+
+FOLDER=${FOLDER:-"dist"}
+
+# Generating a dump inside database container
+echo "Generating dump..."
+dev/bin/tar --zstd -cf /tmp/img.tar.zst img
+echo "Dump generated!"
+
+# Copy dump from database to the host
+echo "Copying dump from container to host..."
+mkdir -p ./dev/$FOLDER
+docker-compose cp app:/tmp/img.tar.zst ./dev/$FOLDER/img.tar.zst 
+docker-compose exec app rm /tmp/img.tar.zst
+echo "Dump copied!"

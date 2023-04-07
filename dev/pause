@@ -1,0 +1,14 @@
+#!/bin/sh
+
+##
+## Pre pause scripts
+##
+
+# Export db dump in tmp folder
+dev/script/db_export --folder tmp
+
+# Export image dump in tmp folder
+dev/script/img_export --folder tmp
+
+# Stop containers
+dev/stop

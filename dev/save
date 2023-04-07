@@ -1,0 +1,4 @@
+#!/bin/sh
+
+dev/script/db_export
+dev/script/img_export

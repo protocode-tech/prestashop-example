@@ -1,0 +1,39 @@
+#!/bin/sh
+
+##
+## Pre up scripts
+##
+
+# Create config files to avoid returning into install process
+dev/script/config_build
+
+# Copy docker-compose files from dist
+cp dev/dist/docker-compose.yml docker-compose.yml
+cp dev/dist/.env .env
+
+# Start containers
+docker-compose up -d
+
+##
+## Post up scripts
+##
+
+# Import db dump
+if [ -f dev/tmp/dump.sql.tar.zst ]; then
+    dev/script/db_import --folder tmp
+    rm dev/tmp/dump.sql.tar.zst
+else 
+    dev/script/db_import
+fi
+
+# Import images
+if [ -f dev/tmp/img.tar.zst ]; then
+    dev/script/img_import --folder tmp
+    rm dev/tmp/img.tar.zst
+fi
+
+# Disable cache in db
+dev/script/cache_disable
+
+# Fix rights on files
+dev/script/rights_fix
