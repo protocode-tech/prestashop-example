@@ -5,10 +5,10 @@
 ##
 
 # Export db dump in tmp folder
-dev/script/db_export --folder tmp
+dev/script/db_export --folder dev/tmp
 
 # Export image dump in tmp folder
-dev/script/img_export --folder tmp
+dev/script/img_export --folder dev/tmp
 
 # Stop containers
 dev/stop

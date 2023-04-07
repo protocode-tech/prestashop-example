@@ -18,7 +18,7 @@ do
             exit 0
         ;;
         -f|--folder)
-            FOLDER=${value:-"dist"}
+            FOLDER=${value:-"dev/dist"}
             shift # past argument
             shift # past value
         ;;
@@ -30,7 +30,7 @@ do
     esac
 done
 
-FOLDER=${FOLDER:-"dist"}
+FOLDER=${FOLDER:-"dev/dist"}
 
 # Generating a dump inside database container
 echo "Generating dump..."
@@ -39,7 +39,7 @@ echo "Dump generated!"
 
 # Copy dump from database to the host
 echo "Copying dump from container to host..."
-mkdir -p ./dev/$FOLDER
-docker-compose cp app:/tmp/img.tar.zst ./dev/$FOLDER/img.tar.zst 
+mkdir -p ./$FOLDER
+docker-compose cp app:/tmp/img.tar.zst ./$FOLDER/img.tar.zst 
 docker-compose exec app rm /tmp/img.tar.zst
 echo "Dump copied!"

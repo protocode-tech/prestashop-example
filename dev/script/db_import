@@ -18,7 +18,7 @@ do
             exit 0
         ;;
         -f|--folder)
-            FOLDER=${value:-"dist"}
+            FOLDER=${value:-"dev/dist"}
             shift # past argument
             shift # past value
         ;;
@@ -30,7 +30,7 @@ do
     esac
 done
 
-FOLDER=${FOLDER:-"dist"}
+FOLDER=${FOLDER:-"dev/dist"}
 
 # Wait for mysql to be up
 if ! dev/bin/mysqladmin 'ping 2>/dev/null'; then
@@ -54,7 +54,7 @@ echo "Mysql is ready to handle connections!"
 
 # Copy dump from host to app container
 echo "Copying dump from host to container..."
-docker-compose cp ./dev/$FOLDER/dump.sql.tar.zst app:/tmp/dump.sql.tar.zst
+docker-compose cp ./$FOLDER/dump.sql.tar.zst app:/tmp/dump.sql.tar.zst
 echo "Dump copied!"
 
 # Uncompressing dump

@@ -20,7 +20,7 @@ docker-compose up -d
 
 # Import db dump
 if [ -f dev/tmp/dump.sql.tar.zst ]; then
-    dev/script/db_import --folder tmp
+    dev/script/db_import --folder dev/tmp
     rm dev/tmp/dump.sql.tar.zst
 else 
     dev/script/db_import
@@ -28,8 +28,10 @@ fi
 
 # Import images
 if [ -f dev/tmp/img.tar.zst ]; then
-    dev/script/img_import --folder tmp
+    dev/script/img_import --folder dev/tmp
     rm dev/tmp/img.tar.zst
+else 
+    dev/script/img_import
 fi
 
 # Disable cache in db

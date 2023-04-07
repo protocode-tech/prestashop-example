@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 PRINT_HELP() {
     echo "Usage: $0 [options]"
     echo ""
@@ -16,7 +18,7 @@ do
             exit 0
         ;;
         -f|--folder)
-            FOLDER=${value:-"dist"}
+            FOLDER=${value:-"dev/dist"}
             shift # past argument
             shift # past value
         ;;
@@ -28,11 +30,11 @@ do
     esac
 done
 
-FOLDER=${FOLDER:-"dist"}
+FOLDER=${FOLDER:-"dev/dist"}
 
 # Copy dump from host to app container
 echo "Copying dump from host to container..."
-docker-compose cp ./dev/$FOLDER/img.tar.zst app:/tmp/img.tar.zst
+docker-compose cp ./$FOLDER/img.tar.zst app:/tmp/img.tar.zst
 echo "Dump copied!"
 
 # Uncompressing dump
