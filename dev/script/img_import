@@ -32,6 +32,11 @@ done
 
 FOLDER=${FOLDER:-"dev/dist"}
 
+if [ ! -f ./$FOLDER/img.tar.zst ]; then
+    echo "No dump found. Skipping.";
+    exit 0;
+fi
+
 # Copy dump from host to app container
 echo "Copying dump from host to container..."
 docker-compose cp ./$FOLDER/img.tar.zst app:/tmp/img.tar.zst

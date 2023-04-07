@@ -32,6 +32,11 @@ done
 
 FOLDER=${FOLDER:-"dev/dist"}
 
+if [ ! -f ./$FOLDER/dump.sql.tar.zst ]; then
+    echo "No dump found. Skipping.";
+    exit 0;
+fi
+
 # Wait for mysql to be up
 if ! dev/bin/mysqladmin 'ping 2>/dev/null'; then
     echo "Waiting for mysql to be up..."
