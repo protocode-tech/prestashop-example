@@ -1,0 +1,8 @@
+#!/bin/sh
+
+dev/script/db_exec "UPDATE \${DB_PREFIX}configuration SET value = 'mailhog' WHERE \${DB_PREFIX}configuration.name = 'PS_MAIL_SERVER'"
+dev/script/db_exec "UPDATE \${DB_PREFIX}configuration SET value = 2 WHERE \${DB_PREFIX}configuration.name = 'PS_MAIL_METHOD'"
+dev/script/db_exec "UPDATE \${DB_PREFIX}configuration SET value = 'off' WHERE \${DB_PREFIX}configuration.name = 'PS_MAIL_SMTP_ENCRYPTION'"
+dev/script/db_exec "UPDATE \${DB_PREFIX}configuration SET value = NULL WHERE \${DB_PREFIX}configuration.name = 'PS_MAIL_USER'"
+dev/script/db_exec "UPDATE \${DB_PREFIX}configuration SET value = NULL WHERE \${DB_PREFIX}configuration.name = 'PS_MAIL_PASSWD'"
+dev/script/db_exec "UPDATE \${DB_PREFIX}configuration SET value = 1025 WHERE \${DB_PREFIX}configuration.name = 'PS_MAIL_SMTP_PORT'"

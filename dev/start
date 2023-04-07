@@ -34,6 +34,9 @@ else
     dev/script/img_import
 fi
 
+# Configure mailhog
+dev/script/mailer_configure
+
 # Disable cache in db
 dev/script/cache_disable
 
