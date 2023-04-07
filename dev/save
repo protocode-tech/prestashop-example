@@ -1,4 +1,7 @@
 #!/bin/sh
 
+# Create a versioned db dump in dev/dist folder
 dev/script/db_export
+
+# Create a versioned image archive in dev/dist folder
 dev/script/img_export
