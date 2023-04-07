@@ -1,0 +1,8 @@
+#!/bin/sh
+
+ZSTD=$(docker-compose exec app which zstd)
+if [ -z $ZSTD ]; then 
+    docker-compose exec app bash -c "apt-get update && apt-get install -y zstd" > /dev/null 2>&1
+fi
+
+docker-compose exec app tar --absolute-names $@

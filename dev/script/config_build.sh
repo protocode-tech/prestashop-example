@@ -12,7 +12,7 @@ cat <<EOF > ./app/config/parameters.php
         'database_prefix' => getenv('DB_PREFIX'),
         'database_engine' => 'InnoDB',
         'mailer_transport' => 'smtp',
-        'mailer_host' => 'mailhog',
+        'mailer_host' => '127.0.0.1',
         'mailer_user' => NULL,
         'mailer_password' => NULL,
         'secret' => 'notSoSecret',

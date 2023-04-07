@@ -21,6 +21,9 @@ docker-compose up -d
 # Import dump
 dev/script/db_import.sh
 
+# Import dump
+dev/script/img_import.sh
+
 # Disable cache in db
 dev/script/cache_disable.sh
 

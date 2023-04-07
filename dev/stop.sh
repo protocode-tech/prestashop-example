@@ -5,7 +5,10 @@
 ##
 
 # Export db dump
-dev/script/db_dump.sh
+dev/script/db_export.sh
+
+# Export image dump
+dev/script/img_export.sh
 
 # Stop containers
 docker-compose down
