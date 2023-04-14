@@ -12,8 +12,8 @@ cp dev/dist/docker-compose.yml docker-compose.yml
 cp dev/dist/.env .env
 
 # Complete UID GID in .env
-sed -i "s/UID=/UID=$(id -u)/" .env
-sed -i "s/GID=/GID=$(id -g)/" .env
+sed -i "s/UID=.*/UID=$(id -u)/" .env
+sed -i "s/GID=.*/GID=$(id -g)/" .env
 
 # Start containers
 docker-compose up -d
