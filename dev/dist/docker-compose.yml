@@ -12,7 +12,10 @@ services:
             DB_USER: $DB_USER
             DB_PASSWD: $DB_PASSWORD
             DB_PREFIX: $DB_PREFIX
+            UID: $UID
+            GID: $GID
         volumes:
+            - './dev/docker-init-scripts:/tmp/init-scripts'
             - './:/var/www/html'
         links:
             - database
@@ -20,6 +23,22 @@ services:
         networks:
             - protocode_default
         restart: unless-stopped
+    # s3fs:
+    #     image: efrecon/s3fs:1.91
+    #     restart: unless-stopped
+    #     environment:
+    #         AWS_S3_BUCKET: protoshop
+    #         AWS_S3_ACCESS_KEY_ID: SCW7RCZSBKC5EHJ3EKMP
+    #         AWS_S3_SECRET_ACCESS_KEY: 4f314ee1-347c-40c1-b252-47ee6a193c90
+    #         AWS_S3_URL: https://s3.fr-par.scw.cloud
+    #         S3FS_ARGS: "use_path_request_style,endpoint=fr-par,parallel_count=15,multipart_size=128,nocopyapi,nonempty"
+    #         UID: $UID
+    #         GID: $GID
+    #     volumes:
+    #         - ./img:/opt/s3fs/bucket:rshared
+    #     cap_add: [SYS_ADMIN]
+    #     security_opt: ['apparmor:unconfined']
+    #     devices: [/dev/fuse]
     database:
         image: 'mysql:5.7'
         environment:
